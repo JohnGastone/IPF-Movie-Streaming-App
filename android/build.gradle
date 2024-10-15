@@ -1,14 +1,27 @@
+buildscript {
+    repositories {
+        google()        // This is required for Firebase and Google Play Services
+        mavenCentral()  // This is required for external libraries
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.2'  // Example Android Gradle plugin version
+        classpath 'com.google.gms:google-services:4.4.2'  // Google services plugin (use the correct version)
+    }
+}
+
 allprojects {
     repositories {
-        google()
+        google()       // Ensure both google() and mavenCentral() are present here as well
         mavenCentral()
     }
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

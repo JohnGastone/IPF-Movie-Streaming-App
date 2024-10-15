@@ -1,21 +1,54 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ipfmoviestreaming/HomeScreen.dart';
 
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({super.key});
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
   bool isChecked = false;
   bool isObscured = true;
   bool isObscuredConfirm = true;
+
+  // Firebase authentication instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  // Method to handle Google Sign-In
+  Future<User?> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        final User? user = userCredential.user;
+
+        if (user != null) {
+          return user;
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +70,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12, top: 40),
+            padding: const EdgeInsets.only(left: 12, right: 12, top: 60),
             child: Column(
               children: [
                 Row(
@@ -307,13 +340,41 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               )),
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
-                            child: Container(
-                              height: screenHeight * 0.02,
-                              width: screenWidth * 0.04,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage("./assets/google.png"),
-                                      fit: BoxFit.cover)),
+                            child: InkWell(
+                              onTap: () async {
+                                User? user =
+                                    await _signInWithGoogle(); // This function handles the Google Sign-In
+                                if (user != null) {
+                                  // If the sign-in is successful, show a confirmation and navigate to HomeScreen
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            'Google Sign-In Successful: ${user.displayName}')),
+                                  );
+
+                                  // Navigate to the HomeScreen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen()),
+                                  );
+                                } else {
+                                  // If the sign-in fails, show an error message
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text('Google Sign-In Failed')),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: screenHeight * 0.02,
+                                width: screenWidth * 0.04,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image:
+                                            AssetImage("./assets/google.png"),
+                                        fit: BoxFit.cover)),
+                              ),
                             ),
                           ),
                         ),

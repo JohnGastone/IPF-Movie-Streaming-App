@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "489441764548",
+    "project_id": "ipf-movie-streaming",
+    "storage_bucket": "ipf-movie-streaming.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489441764548:android:645d93e61b9d1238a09591",
+        "android_client_info": {
+          "package_name": "com.ipfmoviestreaming.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpGotak-Tqcod8B_PrY8svwFCJFrzQsgc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
