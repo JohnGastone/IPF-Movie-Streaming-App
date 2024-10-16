@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:ipfmoviestreaming/HomeScreen.dart';
+import 'package:ipfmoviestreaming/Screens/HomeScreen.dart';
 
 const Color inActiveIconColor = Color(0xFFB6B6B6);
 

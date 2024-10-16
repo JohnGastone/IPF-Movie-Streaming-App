@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ipfmoviestreaming/HomeScreen.dart';
+import 'package:ipfmoviestreaming/Screens/HomeScreen.dart';
 import 'package:ipfmoviestreaming/InitScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
