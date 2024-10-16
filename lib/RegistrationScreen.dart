@@ -277,7 +277,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Row(
                   children: [
                     SizedBox(
-                        width: screenWidth * 0.28,
+                        width: screenWidth * 0.27,
                         child: Divider(
                           color: Color.fromARGB(255, 248, 248, 248),
                         )),
@@ -288,7 +288,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           color: Color.fromARGB(255, 248, 248, 248)),
                     ),
                     SizedBox(
-                        width: screenWidth * 0.28,
+                        width: screenWidth * 0.27,
                         child: Divider(
                           color: Color.fromARGB(255, 248, 248, 248),
                         )),
@@ -315,13 +315,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               )),
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
-                            child: Container(
-                              height: screenHeight * 0.02,
-                              width: screenWidth * 0.04,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage("./assets/fb.png"),
-                                      fit: BoxFit.cover)),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                );
+                              },
+                              child: Container(
+                                height: screenHeight * 0.02,
+                                width: screenWidth * 0.04,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage("./assets/fb.png"),
+                                        fit: BoxFit.cover)),
+                              ),
                             ),
                           ),
                         ),
