@@ -17,9 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // List of movies with their name, genres, and image paths
   final List<Map<String, dynamic>> movies = [
     {
-      'title': 'Doctor Strange',
+      'title': 'Avatar',
       'genres': 'Action | Adventure | Fantasy',
-      'image': './assets/stranger.jpeg'
+      'image': './assets/avatar.jpeg'
     },
     {
       'title': 'See',

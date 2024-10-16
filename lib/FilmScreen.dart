@@ -16,21 +16,9 @@ class FilmScreen extends StatefulWidget {
 class _FilmScreenState extends State<FilmScreen> {
   // List of movies with their name, genres, and image paths
   final List<Map<String, dynamic>> movies = [
-    {
-      'title': 'Doctor Strange',
-      'genres': 'Action | Adventure | Fantasy',
-      'image': './assets/stranger.jpeg'
-    },
-    {
-      'title': 'See',
-      'genres': 'Action | Drama | Thriller',
-      'image': './assets/see.jpeg'
-    },
-    {
-      'title': 'Game of Thrones',
-      'genres': 'Action | Thriller | Fantasy',
-      'image': './assets/got.jpeg'
-    }
+    {'image': './assets/ava1.jpeg'},
+    {'image': './assets/ava2.jpeg'},
+    {'image': './assets/ava3.jpeg'}
   ];
 
   final List<Map<String, dynamic>> casting = [
