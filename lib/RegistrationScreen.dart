@@ -98,6 +98,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     )
                   ],
                 ),
+                SizedBox(
+                  height: screenHeight * 0.04,
+                ),
                 Text(
                   "Create Your Account",
                   style: GoogleFonts.poppins(
@@ -106,7 +109,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       color: Color.fromARGB(255, 248, 248, 248)),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.158,
+                  height: screenHeight * 0.12,
                 ),
                 Container(
                   height: screenHeight * 0.06,

@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ipfmoviestreaming/ActorScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FilmScreen extends StatefulWidget {
@@ -472,27 +473,38 @@ class _FilmScreenState extends State<FilmScreen> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    AssetImage(casting[index]['image']),
-                                radius: 30,
-                              ),
-                              Text(
-                                casting[index]['Role'],
-                                style: GoogleFonts.poppins(color: Colors.grey),
-                              ),
-                              Text(
-                                casting[index]['firstName'],
-                                style: GoogleFonts.poppins(color: Colors.white),
-                              ),
-                              Text(
-                                casting[index]['lastName'],
-                                style: GoogleFonts.poppins(color: Colors.white),
-                              )
-                            ],
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ActorScreen()));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage(casting[index]['image']),
+                                  radius: 30,
+                                ),
+                                Text(
+                                  casting[index]['Role'],
+                                  style:
+                                      GoogleFonts.poppins(color: Colors.grey),
+                                ),
+                                Text(
+                                  casting[index]['firstName'],
+                                  style:
+                                      GoogleFonts.poppins(color: Colors.white),
+                                ),
+                                Text(
+                                  casting[index]['lastName'],
+                                  style:
+                                      GoogleFonts.poppins(color: Colors.white),
+                                )
+                              ],
+                            ),
                           ),
                         );
                       },
