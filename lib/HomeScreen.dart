@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ipfmoviestreaming/FilmScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   final PageController _pageController =
-      PageController(viewportFraction: 0.8, keepPage: true);
+      PageController(viewportFraction: 1.0, keepPage: true);
 
   @override
   Widget build(BuildContext context) {
@@ -64,118 +65,127 @@ class _HomeScreenState extends State<HomeScreen> {
               width: screenWidth,
               child: PageView.builder(
                 padEnds: false, // This removes padding at the start and end
-
                 controller: _pageController,
                 itemCount: movies.length,
                 itemBuilder: (context, index) {
-                  // Get movie details from the movies list
                   final movie = movies[index];
-                  return Container(
-                    height: screenHeight * 0.35,
-                    width: screenWidth,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(movie['image']),
-                        fit: BoxFit.cover,
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FilmScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      // Ensure the container takes full screen width
+                      width: screenWidth,
+                      height: screenHeight * 0.35,
+                      decoration: BoxDecoration(
+                        // Use BoxFit.cover to cover the container
+                        image: DecorationImage(
+                          image: AssetImage(movie['image']),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 14.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: screenHeight * 0.1),
-                          // Rating Container (Optional)
-                          Container(
-                            width: screenWidth * 0.3,
-                            height: screenHeight * 0.05,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(18)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 14.0), // Adjust padding as needed
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: screenHeight * 0.1),
+                            // Rating Container (Optional)
+                            Container(
+                              width: screenWidth * 0.3,
+                              height: screenHeight * 0.05,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(18)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.star, color: Colors.yellow),
+                                  SizedBox(width: screenWidth * 0.03),
+                                  Text(
+                                    "7.5",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            // Movie Title
+                            Text(
+                              movie['title'],
+                              style: GoogleFonts.poppins(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 248, 248, 248),
+                              ),
+                            ),
+                            // Movie Genres
+                            Row(
                               children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
+                                Container(
+                                  width: screenWidth * 0.55,
+                                  height: screenHeight * 0.05,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(18)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        movie['genres'],
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(width: screenWidth * 0.03),
-                                Text(
-                                  "7.5",
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white, // White text color
-                                    fontSize: 14,
+                                // Page indicator for the movies
+                                SmoothPageIndicator(
+                                  controller: _pageController,
+                                  count: movies.length,
+                                  effect: ExpandingDotsEffect(
+                                    dotColor: Colors.white,
+                                    activeDotColor:
+                                        Color.fromARGB(255, 142, 0, 254),
+                                    dotHeight: 12,
+                                    dotWidth: 12,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          // Movie Title
-                          Text(
-                            movie['title'],
-                            style: GoogleFonts.poppins(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 248, 248, 248),
-                            ),
-                          ),
-                          // Movie Genres
-                          Row(
-                            children: [
-                              Container(
-                                width: screenWidth * 0.55,
-                                height: screenHeight * 0.05,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(18)),
+                            // Play Button
+                            SizedBox(
+                              width: screenWidth * 0.9,
+                              height: screenHeight * 0.05,
+                              child: FloatingActionButton(
+                                backgroundColor:
+                                    Color.fromARGB(255, 142, 0, 254),
+                                onPressed: () {
+                                  // Action when the play button is pressed
+                                },
+                                child: Icon(
+                                  CupertinoIcons.play_fill,
+                                  color: Colors.white,
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      movie['genres'],
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Page indicator for the movies
-                              SmoothPageIndicator(
-                                controller: _pageController,
-                                count: movies.length,
-                                effect: ExpandingDotsEffect(
-                                  dotColor: Colors.white,
-                                  activeDotColor:
-                                      Color.fromARGB(255, 142, 0, 254),
-                                  dotHeight: 12,
-                                  dotWidth: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Play Button
-                          SizedBox(
-                            width: screenWidth * 0.9,
-                            height: screenHeight * 0.05,
-                            child: FloatingActionButton(
-                              backgroundColor: Color.fromARGB(255, 142, 0, 254),
-                              onPressed: () {
-                                // Action when the play button is pressed
-                              },
-                              child: Icon(
-                                CupertinoIcons.play_fill,
-                                color: Colors.white,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -246,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: screenWidth * 0.35,
                               height: 3,
                               decoration: BoxDecoration(
-                                color: Colors.purple,
+                                color: Color.fromARGB(255, 142, 0, 254),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
@@ -328,6 +338,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: screenHeight * 0.04,
                               width: screenWidth * 0.5,
                               decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16)),
                                 color: Colors.black.withOpacity(0.6),
                               ),
                               child: Center(

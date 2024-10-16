@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ipfmoviestreaming/HomeScreen.dart';
+import 'package:ipfmoviestreaming/InitScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -320,7 +321,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomeScreen()),
+                                      builder: (context) => InitScreen()),
                                 );
                               },
                               child: Container(
