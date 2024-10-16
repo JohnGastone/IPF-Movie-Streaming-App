@@ -162,8 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     dotColor: Colors.white,
                                     activeDotColor:
                                         Color.fromARGB(255, 142, 0, 254),
-                                    dotHeight: 12,
-                                    dotWidth: 12,
+                                    dotHeight: 10,
+                                    dotWidth: 10,
                                   ),
                                 ),
                               ],

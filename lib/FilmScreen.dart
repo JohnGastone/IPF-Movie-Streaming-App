@@ -37,25 +37,25 @@ class _FilmScreenState extends State<FilmScreen> {
       'Role': 'Actor',
       'firstName': 'Sam',
       'lastName': 'Worthington',
-      'image': './assets/stranger.jpeg'
+      'image': './assets/sam.jpeg'
     },
     {
       'Role': 'Actress',
       'firstName': 'Zoe',
       'lastName': 'Saldana',
-      'image': './assets/see.jpeg'
+      'image': './assets/zoe.jpeg'
     },
     {
       'Role': 'Actor',
       'firstName': 'Stephen',
       'lastName': 'Lang',
-      'image': './assets/got.jpeg'
+      'image': './assets/stephen.jpeg'
     },
     {
       'Role': 'Actress',
       'firstName': 'Sigourney',
       'lastName': 'Weaver',
-      'image': './assets/got.jpeg'
+      'image': './assets/sigourney.jpeg'
     }
   ];
 
@@ -117,7 +117,31 @@ class _FilmScreenState extends State<FilmScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: screenHeight * 0.2),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 28.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  height: screenHeight * 0.03,
+                                  width: screenWidth * 0.1,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black.withOpacity(0.6),
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.15),
 
                           // Movie Genres
                           Row(
@@ -172,8 +196,8 @@ class _FilmScreenState extends State<FilmScreen> {
                                   dotColor: Colors.white,
                                   activeDotColor:
                                       Color.fromARGB(255, 142, 0, 254),
-                                  dotHeight: 12,
-                                  dotWidth: 12,
+                                  dotHeight: 10,
+                                  dotWidth: 10,
                                 ),
                               ),
                             ],
@@ -226,10 +250,12 @@ class _FilmScreenState extends State<FilmScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Icon(
-                                          CupertinoIcons.play_fill,
+                                        Image.asset(
+                                          "./assets/cinema.png",
                                           color:
                                               Color.fromARGB(255, 142, 0, 254),
+                                          height: screenHeight * 0.06,
+                                          width: screenWidth * 0.07,
                                         ),
                                         Text(
                                           "Watch Trailer",
