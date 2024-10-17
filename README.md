@@ -49,10 +49,16 @@ To run this project locally, follow these steps:
   
 ## App Screenshots
 
-### Home Screen
+### Registration Screen
 ![Registration Screen](assets/screenshots/Registration.png)
+
+### Home Screen
 ![Home Screen](assets/screenshots/Home.png)
+
+### Film Screen
 ![Film Screen](assets/screenshots/Film.png)
+
+### Actor Screen
 ![Actor Screen](assets/screenshots/Actor.png)
 
 
