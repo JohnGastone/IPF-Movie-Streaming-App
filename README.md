@@ -47,5 +47,14 @@ To run this project locally, follow these steps:
 ## Additional Notes
 - If Google authentication fails, you can bypass it by clicking the sign-up button to explore the app’s screens.
   
+## App Screenshots
+
+### Home Screen
+![Registration Screen](assets/screenshots/Registration.png)
+![Home Screen](assets/screenshots/Home.png)
+![Film Screen](assets/screenshots/Film.png)
+![Actor Screen](assets/screenshots/Actor.png)
+
+
 
 
