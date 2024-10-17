@@ -22,6 +22,9 @@ This is a Flutter-based movie streaming app that fetches data from the TMDb (The
 - **Google Authentication Misconfiguration**: There were several misconfigurations encountered during setup, which may require revisiting and fixing.
 - **Feature Limitation**: The proposed UI included additional features that were not covered by the TMDb API. As a result, they were excluded from the app.
 
+## Testing Devices
+The app has been successfully tested on a physical Infinix Hot 10i device, as well as on two emulators: Google Pixel 3 and Google Pixel 7.
+
 ## Installation Instructions
 To run this project locally, follow these steps:
 
