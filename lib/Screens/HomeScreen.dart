@@ -4,12 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ipfmoviestreaming/Screens/FilmScreen.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -128,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     movie['vote_average'].toStringAsFixed(1),
                                     style: GoogleFonts.poppins(
-                                      color: Colors.white,
+                                      color: Color.fromARGB(255, 248, 248, 248),
                                       fontSize: 14,
                                     ),
                                   ),
@@ -150,12 +149,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: FloatingActionButton(
                                 backgroundColor:
                                     Color.fromARGB(255, 142, 0, 254),
-                                onPressed: () {
-                                  // Play the movie handler
-                                },
+                                onPressed: () {},
                                 child: Icon(
                                   CupertinoIcons.play_fill,
-                                  color: Colors.white,
+                                  color: Color.fromARGB(255, 248, 248, 248),
                                 ),
                               ),
                             ),
@@ -263,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Icon(
                           Icons.close_rounded,
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 248, 248, 248),
                           size: 24,
                         ),
                       ),
@@ -360,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Icon(
                           Icons.bookmark_add,
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 248, 248, 248),
                           size: 20,
                         ),
                       ),

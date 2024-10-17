@@ -20,6 +20,7 @@ class _FilmScreenState extends State<FilmScreen> {
   final String apiKey = 'ba86efc390e57094a77b83946be6625c';
   Map<String, dynamic> movieDetails = {};
   List<Map<String, dynamic>> cast = [];
+  List<Map<String, dynamic>> reviews = [];
   List<Map<String, dynamic>> similarMovies = [];
 
   @override
@@ -27,6 +28,7 @@ class _FilmScreenState extends State<FilmScreen> {
     super.initState();
     fetchMovieDetails();
     fetchMovieCast();
+    fetchMovieReviews();
     fetchSimilarMovies();
   }
 
@@ -47,6 +49,17 @@ class _FilmScreenState extends State<FilmScreen> {
       final data = json.decode(response.body);
       setState(() {
         cast = List<Map<String, dynamic>>.from(data['cast']);
+      });
+    }
+  }
+
+  Future<void> fetchMovieReviews() async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/movie/${widget.movieId}/reviews?api_key=$apiKey'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        reviews = List<Map<String, dynamic>>.from(data['results']);
       });
     }
   }
@@ -109,7 +122,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                     ),
                                     child: Icon(
                                       Icons.arrow_back_ios_new,
-                                      color: Colors.white,
+                                      color: Color.fromARGB(255, 248, 248, 248),
                                       size: 15,
                                     ),
                                   ),
@@ -138,7 +151,8 @@ class _FilmScreenState extends State<FilmScreen> {
                                       Text(
                                         "${movieDetails['vote_average']?.toStringAsFixed(1) ?? 'N/A'} ",
                                         style: GoogleFonts.poppins(
-                                          color: Colors.white,
+                                          color: Color.fromARGB(
+                                              255, 248, 248, 248),
                                           fontSize: 14,
                                         ),
                                       ),
@@ -174,12 +188,14 @@ class _FilmScreenState extends State<FilmScreen> {
                                         children: [
                                           Icon(
                                             CupertinoIcons.play_fill,
-                                            color: Colors.white,
+                                            color: Color.fromARGB(
+                                                255, 248, 248, 248),
                                           ),
                                           Text(
                                             "Watch Now",
                                             style: GoogleFonts.poppins(
-                                                color: Colors.white),
+                                                color: Color.fromARGB(
+                                                    255, 248, 248, 248)),
                                           ),
                                         ],
                                       ),
@@ -189,7 +205,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.45,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Color.fromARGB(255, 248, 248, 248),
                                       borderRadius: BorderRadius.only(
                                         topRight: Radius.circular(18),
                                         bottomRight: Radius.circular(18),
@@ -235,16 +251,128 @@ class _FilmScreenState extends State<FilmScreen> {
                   Text(
                     movieDetails['title'] ?? 'Loading...',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 248, 248, 248),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Text(
                     movieDetails['overview'] ?? 'Loading...',
-                    style: GoogleFonts.poppins(color: Colors.white),
+                    style: GoogleFonts.poppins(
+                        color: Color.fromARGB(255, 248, 248, 248)),
                   ),
                   SizedBox(height: screenHeight * 0.01),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: screenWidth * 0.45,
+                              height: screenHeight * 0.05,
+                              decoration: BoxDecoration(
+                                color: Colors.black26.withOpacity(0.6),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(18)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.hand_thumbsup,
+                                        color:
+                                            Color.fromARGB(255, 248, 248, 248),
+                                      ),
+                                      SizedBox(width: screenWidth * 0.02),
+                                      Text(
+                                        "254",
+                                        style: GoogleFonts.poppins(
+                                          color: Color.fromARGB(255, 40, 48,
+                                              61), // White text color
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "   |   ",
+                                    style: GoogleFonts.poppins(
+                                      color: Color.fromARGB(255, 40, 48, 61),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.hand_thumbsdown,
+                                        color:
+                                            Color.fromARGB(255, 248, 248, 248),
+                                      ),
+                                      SizedBox(width: screenWidth * 0.02),
+                                      Text(
+                                        "103",
+                                        style: GoogleFonts.poppins(
+                                          color: Color.fromARGB(255, 40, 48,
+                                              61), // White text color
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              height: screenHeight * 0.03,
+                              width: screenWidth * 0.1,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                              child: Icon(
+                                Icons.bookmark_add,
+                                color: Color.fromARGB(255, 248, 248, 248),
+                                size: 15,
+                              ),
+                            ),
+                            Container(
+                              height: screenHeight * 0.03,
+                              width: screenWidth * 0.1,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                              child: Icon(
+                                CupertinoIcons.share,
+                                color: Color.fromARGB(255, 248, 248, 248),
+                                size: 15,
+                              ),
+                            ),
+                            Container(
+                              height: screenHeight * 0.03,
+                              width: screenWidth * 0.1,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 142, 0, 254),
+                              ),
+                              child: Icon(
+                                Icons.file_download_outlined,
+                                color: Color.fromARGB(255, 248, 248, 248),
+                                size: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -294,13 +422,14 @@ class _FilmScreenState extends State<FilmScreen> {
                                 ),
                                 Text(
                                   actor['character'],
-                                  style:
-                                      GoogleFonts.poppins(color: Colors.grey),
+                                  style: GoogleFonts.poppins(
+                                      color: Color.fromARGB(255, 40, 48, 61)),
                                 ),
                                 Text(
                                   actor['name'],
-                                  style:
-                                      GoogleFonts.poppins(color: Colors.white),
+                                  style: GoogleFonts.poppins(
+                                      color:
+                                          Color.fromARGB(255, 248, 248, 248)),
                                 ),
                               ],
                             ),
@@ -309,6 +438,119 @@ class _FilmScreenState extends State<FilmScreen> {
                       },
                     ),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Reviews",
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 248, 248, 248),
+                        ),
+                      ),
+                      Text(
+                        "All reviews",
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 248, 248, 248),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  reviews.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: reviews.length > 2 ? 2 : reviews.length,
+                          itemBuilder: (context, index) {
+                            final review = reviews[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 248, 248, 248)
+                                      .withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            review['author_details']
+                                                        ['avatar_path'] !=
+                                                    null
+                                                ? 'https://image.tmdb.org/t/p/w100${review['author_details']['avatar_path']}'
+                                                : 'https://via.placeholder.com/100',
+                                          ),
+                                          radius: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              review['author'],
+                                              style: GoogleFonts.poppins(
+                                                color: Color.fromARGB(
+                                                    255, 248, 248, 248),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              review['created_at']
+                                                  .substring(0, 10),
+                                              style: GoogleFonts.poppins(
+                                                color: Color.fromARGB(
+                                                    255, 40, 48, 61),
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      review['content'].length > 100
+                                          ? '${review['content'].substring(0, 100)}...'
+                                          : review['content'],
+                                      style: GoogleFonts.poppins(
+                                          color: Color.fromARGB(
+                                              255, 248, 248, 248)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              'This movie has not received any review yet!',
+                              style: GoogleFonts.poppins(
+                                color: Color.fromARGB(255, 248, 248, 248),
+                                fontSize: 16,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
                 ],
               ),
             ),
@@ -358,7 +600,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
-                                    height: screenHeight * 0.04,
+                                    height: screenHeight * 0.08,
                                     width: screenWidth * 0.5,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(
@@ -392,7 +634,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                   ),
                                   child: Icon(
                                     Icons.bookmark_add,
-                                    color: Colors.white,
+                                    color: Color.fromARGB(255, 248, 248, 248),
                                     size: 20,
                                   ),
                                 ),

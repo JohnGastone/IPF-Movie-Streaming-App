@@ -105,7 +105,8 @@ class _ActorScreenState extends State<ActorScreen> {
                                         ),
                                         child: Icon(
                                           Icons.arrow_back_ios_new,
-                                          color: Colors.white,
+                                          color: Color.fromARGB(
+                                              255, 248, 248, 248),
                                           size: 15,
                                         ),
                                       ),
@@ -127,7 +128,8 @@ class _ActorScreenState extends State<ActorScreen> {
                                         child: Text(
                                           movie['title'],
                                           style: GoogleFonts.poppins(
-                                            color: Colors.white,
+                                            color: Color.fromARGB(
+                                                255, 248, 248, 248),
                                             fontSize: 14,
                                           ),
                                         ),
@@ -140,7 +142,8 @@ class _ActorScreenState extends State<ActorScreen> {
                                           ? 3
                                           : actorMovies.length,
                                       effect: ExpandingDotsEffect(
-                                        dotColor: Colors.white,
+                                        dotColor:
+                                            Color.fromARGB(255, 248, 248, 248),
                                         activeDotColor:
                                             Color.fromARGB(255, 142, 0, 254),
                                         dotHeight: 10,
@@ -167,23 +170,27 @@ class _ActorScreenState extends State<ActorScreen> {
                     children: [
                       Text(
                         actorDetails['known_for_department'] ?? '',
-                        style: GoogleFonts.poppins(color: Colors.grey),
+                        style: GoogleFonts.poppins(
+                            color: Color.fromARGB(255, 40, 48, 61)),
                       ),
                       Text(
                         actorDetails['birthday'] ?? '',
-                        style: GoogleFonts.poppins(color: Colors.grey),
+                        style: GoogleFonts.poppins(
+                            color: Color.fromARGB(255, 40, 48, 61)),
                       ),
                     ],
                   ),
                   Text(
                     actorDetails['name'] ?? 'Loading...',
                     style: GoogleFonts.poppins(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Color.fromARGB(255, 248, 248, 248),
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Text(
                     actorDetails['biography'] ?? 'Loading...',
-                    style: GoogleFonts.poppins(color: Colors.white),
+                    style: GoogleFonts.poppins(
+                        color: Color.fromARGB(255, 248, 248, 248)),
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Padding(
@@ -229,7 +236,7 @@ class _ActorScreenState extends State<ActorScreen> {
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
-                                    height: screenHeight * 0.06,
+                                    height: screenHeight * 0.08,
                                     width: screenWidth * 0.5,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(
@@ -246,7 +253,8 @@ class _ActorScreenState extends State<ActorScreen> {
                                             'Role - ${movie['character']}',
                                             style: GoogleFonts.poppins(
                                                 fontSize: 12,
-                                                color: Colors.grey),
+                                                color: Color.fromARGB(
+                                                    255, 40, 48, 61)),
                                           ),
                                           Text(
                                             movie['title'],
@@ -273,7 +281,7 @@ class _ActorScreenState extends State<ActorScreen> {
                                   ),
                                   child: Icon(
                                     Icons.bookmark_add,
-                                    color: Colors.white,
+                                    color: Color.fromARGB(255, 248, 248, 248),
                                     size: 20,
                                   ),
                                 ),
@@ -289,19 +297,21 @@ class _ActorScreenState extends State<ActorScreen> {
                     style: GoogleFonts.poppins(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white),
+                        color: Color.fromARGB(255, 248, 248, 248)),
                   ),
                   Row(
                     children: [
                       Text(
                         "Birth Place: ",
                         style: GoogleFonts.poppins(
-                            fontSize: 16, color: Colors.white),
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 248, 248, 248)),
                       ),
                       Text(
                         actorDetails['place_of_birth'] ?? 'N/A',
                         style: GoogleFonts.poppins(
-                            fontSize: 14, color: Colors.grey),
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 40, 48, 61)),
                       )
                     ],
                   ),

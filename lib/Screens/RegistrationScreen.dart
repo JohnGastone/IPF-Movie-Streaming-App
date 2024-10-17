@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ipfmoviestreaming/Screens/HomeScreen.dart';
 import 'package:ipfmoviestreaming/InitScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -21,34 +20,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool isObscured = true;
   bool isObscuredConfirm = true;
 
-  // Firebase authentication instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  // Method to handle Google Sign-In
   Future<User?> _signInWithGoogle() async {
     try {
+      await _googleSignIn.signOut();
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
-        final User? user = userCredential.user;
-
-        if (user != null) {
-          return user;
-        }
+      if (googleUser == null) {
+        debugPrint('Google Sign In: User cancelled');
+        return null;
       }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      debugPrint(
+          'Got tokens - Access Token: ${googleAuth.accessToken != null}');
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user;
     } catch (e) {
+      debugPrint('Google Sign In Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign in failed: $e')),
+      );
       return null;
     }
-    return null;
   }
 
   @override
@@ -56,6 +59,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: Stack(children: [
           ImageFiltered(
@@ -115,18 +119,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: screenHeight * 0.06,
                   width: screenWidth * 0.8,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 248, 248, 248),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0, bottom: 5),
                     child: TextField(
-                      style:
-                          GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
+                      style: GoogleFonts.poppins(
+                          fontSize: 16, color: Color.fromARGB(255, 40, 48, 61)),
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Username",
                           hintStyle: GoogleFonts.poppins(
-                              fontSize: 15, color: Colors.grey)),
+                              fontSize: 15,
+                              color: Color.fromARGB(255, 40, 48, 61))),
                     ),
                   ),
                 ),
@@ -137,18 +142,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: screenHeight * 0.06,
                   width: screenWidth * 0.8,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 248, 248, 248),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0, bottom: 5),
                     child: TextField(
-                      style:
-                          GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
+                      style: GoogleFonts.poppins(
+                          fontSize: 16, color: Color.fromARGB(255, 40, 48, 61)),
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Email",
                           hintStyle: GoogleFonts.poppins(
-                              fontSize: 15, color: Colors.grey)),
+                              fontSize: 15,
+                              color: Color.fromARGB(255, 40, 48, 61))),
                     ),
                   ),
                 ),
@@ -159,20 +165,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: screenHeight * 0.06,
                   width: screenWidth * 0.8,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 248, 248, 248),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                       padding: const EdgeInsets.only(left: 15.0, bottom: 5),
                       child: TextField(
                         obscureText: isObscured,
                         style: GoogleFonts.poppins(
-                            fontSize: 16, color: Colors.grey),
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 40, 48, 61)),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Password",
                           hintStyle: GoogleFonts.poppins(
                             fontSize: 15,
-                            color: Colors.grey,
+                            color: Color.fromARGB(255, 40, 48, 61),
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -184,7 +191,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               isObscured
                                   ? Icons.visibility_off
                                   : Icons.visibility,
-                              color: Colors.grey,
+                              color: Color.fromARGB(255, 40, 48, 61),
                             ),
                           ),
                         ),
@@ -197,20 +204,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: screenHeight * 0.06,
                   width: screenWidth * 0.8,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 248, 248, 248),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                       padding: const EdgeInsets.only(left: 15.0, bottom: 5),
                       child: TextField(
                         obscureText: isObscuredConfirm,
                         style: GoogleFonts.poppins(
-                            fontSize: 16, color: Colors.grey),
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 40, 48, 61)),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Confirm Password",
                           hintStyle: GoogleFonts.poppins(
                             fontSize: 15,
-                            color: Colors.grey,
+                            color: Color.fromARGB(255, 40, 48, 61),
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -222,7 +230,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               isObscuredConfirm
                                   ? Icons.visibility_off
                                   : Icons.visibility,
-                              color: Colors.grey,
+                              color: Color.fromARGB(255, 40, 48, 61),
                             ),
                           ),
                         ),
@@ -260,18 +268,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 SizedBox(
                   height: screenHeight * 0.015,
                 ),
-                Container(
-                  height: screenHeight * 0.045,
-                  width: screenWidth * 0.6,
-                  decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 142, 0, 254),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      )),
-                  child: Center(
-                    child: Text(
-                      "Sign up",
-                      style: GoogleFonts.poppins(color: Colors.white),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InitScreen()),
+                    );
+                  },
+                  child: Container(
+                    height: screenHeight * 0.045,
+                    width: screenWidth * 0.6,
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 142, 0, 254),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        )),
+                    child: Center(
+                      child: Text(
+                        "Sign up",
+                        style: GoogleFonts.poppins(
+                            color: Color.fromARGB(255, 248, 248, 248)),
+                      ),
                     ),
                   ),
                 ),
@@ -320,13 +337,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
                             child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InitScreen()),
-                                );
-                              },
+                              onTap: () {},
                               child: Container(
                                 height: screenHeight * 0.02,
                                 width: screenWidth * 0.04,
@@ -355,24 +366,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             padding: const EdgeInsets.all(3.0),
                             child: InkWell(
                               onTap: () async {
-                                User? user =
-                                    await _signInWithGoogle(); // This function handles the Google Sign-In
+                                User? user = await _signInWithGoogle();
                                 if (user != null) {
-                                  // If the sign-in is successful, show a confirmation and navigate to HomeScreen
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
                                             'Google Sign-In Successful: ${user.displayName}')),
                                   );
 
-                                  // Navigate to the HomeScreen
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
+                                        builder: (context) => InitScreen()),
                                   );
                                 } else {
-                                  // If the sign-in fails, show an error message
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text('Google Sign-In Failed')),
@@ -443,7 +450,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: screenHeight * 0.1, // 50 Units of height
+                      height: screenHeight * 0.1,
                     ),
                   ],
                 ),
