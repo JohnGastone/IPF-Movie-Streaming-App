@@ -312,34 +312,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Stack(
                   children: [
-                    Container(
-                      width: screenWidth * 0.5,
-                      height: screenHeight * 0.2,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500${item['poster_path']}'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: screenHeight * 0.04,
-                          width: screenWidth * 0.5,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16)),
-                            color: Colors.black.withOpacity(0.6),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FilmScreen(movieId: item['id']),
                           ),
-                          child: Center(
-                            child: Text(
-                              item['title'] ?? item['name'],
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 248, 248, 248)),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth * 0.5,
+                        height: screenHeight * 0.2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                'https://image.tmdb.org/t/p/w500${item['poster_path']}'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: screenHeight * 0.04,
+                            width: screenWidth * 0.5,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16)),
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                            child: Center(
+                              child: Text(
+                                item['title'] ?? item['name'],
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 248, 248, 248)),
+                              ),
                             ),
                           ),
                         ),
