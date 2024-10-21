@@ -22,15 +22,39 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Movie> continueWatching = [];
   List<TVShow> trendingTVShows = [];
 
+  bool isLoading = true;
+  String error = '';
+
   final PageController _pageController =
       PageController(viewportFraction: 1.0, keepPage: true);
 
   @override
   void initState() {
     super.initState();
-    fetchTrendingMovies();
-    fetchContinueWatching();
-    fetchTrendingTVShows();
+    fetchAllData();
+  }
+
+  Future<void> fetchAllData() async {
+    setState(() {
+      isLoading = true;
+      error = '';
+    });
+
+    try {
+      await Future.wait([
+        fetchTrendingMovies(),
+        fetchContinueWatching(),
+        fetchTrendingTVShows(),
+      ]);
+    } catch (e) {
+      setState(() {
+        error = 'An error occurred while fetching data. Please try again.';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> fetchTrendingMovies() async {
@@ -43,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
             .map((movieJson) => Movie.fromJson(movieJson))
             .toList();
       });
+    } else {
+      throw Exception('Failed to load trending movies');
     }
   }
 
@@ -56,6 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
             .map((movieJson) => Movie.fromJson(movieJson))
             .toList();
       });
+    } else {
+      throw Exception('Failed to load continue watching');
     }
   }
 
@@ -69,6 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
             .map((tvShowJson) => TVShow.fromJson(tvShowJson))
             .toList();
       });
+    } else {
+      throw Exception('Failed to load trending TV shows');
     }
   }
 
@@ -76,6 +106,48 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Color.fromARGB(255, 40, 48, 61),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color.fromARGB(255, 142, 0, 254),
+          ),
+        ),
+      );
+    }
+
+    if (error.isNotEmpty) {
+      return Scaffold(
+        backgroundColor: Color.fromARGB(255, 40, 48, 61),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                error,
+                style: GoogleFonts.poppins(
+                  color: Color.fromARGB(255, 248, 248, 248),
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: fetchAllData,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 142, 0, 254),
+                ),
+                child: Text(
+                  'Retry',
+                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 40, 48, 61),
