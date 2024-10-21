@@ -7,6 +7,8 @@ import 'package:ipfmoviestreaming/Screens/FilmScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:ipfmoviestreaming/Widgets/ApiModel.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,9 +18,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final String apiKey = 'ba86efc390e57094a77b83946be6625c';
-  List<Map<String, dynamic>> trendingMovies = [];
-  List<Map<String, dynamic>> continueWatching = [];
-  List<Map<String, dynamic>> trendingTVShows = [];
+  List<Movie> trendingMovies = [];
+  List<Movie> continueWatching = [];
+  List<TVShow> trendingTVShows = [];
 
   final PageController _pageController =
       PageController(viewportFraction: 1.0, keepPage: true);
@@ -37,19 +39,22 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        trendingMovies = List<Map<String, dynamic>>.from(data['results']);
+        trendingMovies = (data['results'] as List)
+            .map((movieJson) => Movie.fromJson(movieJson))
+            .toList();
       });
     }
   }
 
   Future<void> fetchContinueWatching() async {
-    // For demo purposes, I'll use popular movies as "Continue Watching"
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        continueWatching = List<Map<String, dynamic>>.from(data['results']);
+        continueWatching = (data['results'] as List)
+            .map((movieJson) => Movie.fromJson(movieJson))
+            .toList();
       });
     }
   }
@@ -60,7 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        trendingTVShows = List<Map<String, dynamic>>.from(data['results']);
+        trendingTVShows = (data['results'] as List)
+            .map((tvShowJson) => TVShow.fromJson(tvShowJson))
+            .toList();
       });
     }
   }
@@ -89,8 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              FilmScreen(movieId: movie['id']),
+                          builder: (context) => FilmScreen(movieId: movie.id),
                         ),
                       );
                     },
@@ -100,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500${movie['backdrop_path']}'),
+                              'https://image.tmdb.org/t/p/w500${movie.backdropPath}'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -125,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Icon(Icons.star, color: Colors.yellow),
                                   SizedBox(width: screenWidth * 0.03),
                                   Text(
-                                    movie['vote_average'].toStringAsFixed(1),
+                                    movie.voteAverage.toStringAsFixed(1),
                                     style: GoogleFonts.poppins(
                                       color: Color.fromARGB(255, 248, 248, 248),
                                       fontSize: 14,
@@ -135,14 +141,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Text(
-                              movie['title'],
+                              movie.title,
                               style: GoogleFonts.poppins(
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 248, 248, 248),
                               ),
                             ),
-                            // Play Button
                             SizedBox(
                               width: screenWidth * 0.9,
                               height: screenHeight * 0.05,
@@ -164,10 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            // Continue Watching Section
             buildSectionContinueWatching("Continue Watching", continueWatching,
                 screenHeight, screenWidth),
-            // Trending Now Section
             InkWell(
               child: buildSectionTrendingTvShows(
                   "Trending Now", trendingTVShows, screenHeight, screenWidth),
@@ -178,11 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildSectionContinueWatching(
-      String title,
-      List<Map<String, dynamic>> items,
-      double screenHeight,
-      double screenWidth) {
+  Widget buildSectionContinueWatching(String title, List<Movie> items,
+      double screenHeight, double screenWidth) {
     return Column(
       children: [
         Padding(
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(16),
                         image: DecorationImage(
                           image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500${item['poster_path']}'),
+                              'https://image.tmdb.org/t/p/w500${item.backdropPath}'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              item['title'] ?? item['name'],
+                              item.title,
                               style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 248, 248, 248)),
@@ -275,11 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildSectionTrendingTvShows(
-      String title,
-      List<Map<String, dynamic>> items,
-      double screenHeight,
-      double screenWidth) {
+  Widget buildSectionTrendingTvShows(String title, List<TVShow> items,
+      double screenHeight, double screenWidth) {
     return Column(
       children: [
         Padding(
@@ -317,8 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                FilmScreen(movieId: item['id']),
+                            builder: (context) => FilmScreen(movieId: item.id),
                           ),
                         );
                       },
@@ -329,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(16),
                           image: DecorationImage(
                             image: NetworkImage(
-                                'https://image.tmdb.org/t/p/w500${item['poster_path']}'),
+                                'https://image.tmdb.org/t/p/w500${item.posterPath}'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -346,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                item['title'] ?? item['name'],
+                                item.name,
                                 style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 248, 248, 248)),
