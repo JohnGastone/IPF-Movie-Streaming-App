@@ -7,6 +7,8 @@ import 'package:ipfmoviestreaming/Screens/ActorScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:ipfmoviestreaming/Widgets/ApiModel.dart';
+
 class FilmScreen extends StatefulWidget {
   final int movieId;
 
@@ -18,59 +20,39 @@ class FilmScreen extends StatefulWidget {
 
 class _FilmScreenState extends State<FilmScreen> {
   final String apiKey = 'ba86efc390e57094a77b83946be6625c';
-  Map<String, dynamic> movieDetails = {};
-  List<Map<String, dynamic>> cast = [];
-  List<Map<String, dynamic>> reviews = [];
-  List<Map<String, dynamic>> similarMovies = [];
+  MovieDetails? movieDetails;
+  bool isLoading = true;
+  String error = '';
 
   @override
   void initState() {
     super.initState();
     fetchMovieDetails();
-    fetchMovieCast();
-    fetchMovieReviews();
-    fetchSimilarMovies();
   }
 
   Future<void> fetchMovieDetails() async {
-    final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${widget.movieId}?api_key=$apiKey'));
-    if (response.statusCode == 200) {
-      setState(() {
-        movieDetails = json.decode(response.body);
-      });
-    }
-  }
+    setState(() {
+      isLoading = true;
+      error = '';
+    });
 
-  Future<void> fetchMovieCast() async {
-    final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${widget.movieId}/credits?api_key=$apiKey'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        cast = List<Map<String, dynamic>>.from(data['cast']);
-      });
-    }
-  }
+    try {
+      final response = await http.get(Uri.parse(
+          'https://api.themoviedb.org/3/movie/${widget.movieId}?api_key=$apiKey&append_to_response=credits,reviews,similar'));
 
-  Future<void> fetchMovieReviews() async {
-    final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${widget.movieId}/reviews?api_key=$apiKey'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          movieDetails = MovieDetails.fromJson(data);
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load movie details');
+      }
+    } catch (e) {
       setState(() {
-        reviews = List<Map<String, dynamic>>.from(data['results']);
-      });
-    }
-  }
-
-  Future<void> fetchSimilarMovies() async {
-    final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${widget.movieId}/similar?api_key=$apiKey'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        similarMovies = List<Map<String, dynamic>>.from(data['results']);
+        error = 'An error occurred while fetching movie details: $e';
+        isLoading = false;
       });
     }
   }
@@ -80,6 +62,48 @@ class _FilmScreenState extends State<FilmScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Color.fromARGB(255, 40, 48, 61),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color.fromARGB(255, 142, 0, 254),
+          ),
+        ),
+      );
+    }
+
+    if (error.isNotEmpty) {
+      return Scaffold(
+        backgroundColor: Color.fromARGB(255, 40, 48, 61),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                error,
+                style: GoogleFonts.poppins(
+                  color: Color.fromARGB(255, 248, 248, 248),
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: fetchMovieDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 142, 0, 254),
+                ),
+                child: Text(
+                  'Retry',
+                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 40, 48, 61),
       body: SingleChildScrollView(
@@ -88,14 +112,14 @@ class _FilmScreenState extends State<FilmScreen> {
             SizedBox(
               height: screenHeight * 0.4,
               width: screenWidth,
-              child: movieDetails.isNotEmpty
+              child: movieDetails != null
                   ? Container(
                       height: screenHeight * 0.35,
                       width: screenWidth,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500${movieDetails['backdrop_path']}'),
+                              'https://image.tmdb.org/t/p/w500${movieDetails!.backdropPath}'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -149,7 +173,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                       ),
                                       SizedBox(width: screenWidth * 0.03),
                                       Text(
-                                        "${movieDetails['vote_average']?.toStringAsFixed(1) ?? 'N/A'} ",
+                                        "${movieDetails!.voteAverage.toStringAsFixed(1)} ",
                                         style: GoogleFonts.poppins(
                                           color: Color.fromARGB(
                                               255, 248, 248, 248),
@@ -249,7 +273,7 @@ class _FilmScreenState extends State<FilmScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    movieDetails['title'] ?? 'Loading...',
+                    movieDetails!.title,
                     style: GoogleFonts.poppins(
                       color: Color.fromARGB(255, 248, 248, 248),
                       fontWeight: FontWeight.bold,
@@ -257,7 +281,7 @@ class _FilmScreenState extends State<FilmScreen> {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Text(
-                    movieDetails['overview'] ?? 'Loading...',
+                    movieDetails!.overview,
                     style: GoogleFonts.poppins(
                         color: Color.fromARGB(255, 248, 248, 248)),
                   ),
@@ -375,67 +399,74 @@ class _FilmScreenState extends State<FilmScreen> {
                       ]),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Text(
-                          "Cast & Crew",
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 248, 248, 248),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Cast & Crew",
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 248, 248, 248),
+                              ),
+                            ),
+                            Icon(
+                              CupertinoIcons.forward,
+                              color: Color.fromARGB(255, 248, 248, 248),
+                            )
+                          ],
                         ),
-                        Icon(
-                          CupertinoIcons.forward,
-                          color: Color.fromARGB(255, 248, 248, 248),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.18,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: cast.length,
-                      itemBuilder: (context, index) {
-                        final actor = cast[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ActorScreen(actorId: actor['id']),
+                        SizedBox(
+                          height: screenHeight * 0.18,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: movieDetails?.cast.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final actor = movieDetails!.cast[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ActorScreen(actorId: actor.id),
+                                      ),
+                                    );
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                          'https://image.tmdb.org/t/p/w200${actor.profilePath}',
+                                        ),
+                                        radius: 30,
+                                      ),
+                                      Text(
+                                        actor.character,
+                                        style: GoogleFonts.poppins(
+                                            color: Color.fromARGB(
+                                                255, 40, 48, 61)),
+                                      ),
+                                      Text(
+                                        actor.name,
+                                        style: GoogleFonts.poppins(
+                                            color: Color.fromARGB(
+                                                255, 248, 248, 248)),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    'https://image.tmdb.org/t/p/w200${actor['profile_path']}',
-                                  ),
-                                  radius: 30,
-                                ),
-                                Text(
-                                  actor['character'],
-                                  style: GoogleFonts.poppins(
-                                      color: Color.fromARGB(255, 40, 48, 61)),
-                                ),
-                                Text(
-                                  actor['name'],
-                                  style: GoogleFonts.poppins(
-                                      color:
-                                          Color.fromARGB(255, 248, 248, 248)),
-                                ),
-                              ],
-                            ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -466,13 +497,15 @@ class _FilmScreenState extends State<FilmScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  reviews.isNotEmpty
+                  movieDetails?.reviews.isNotEmpty ?? false
                       ? ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: reviews.length > 2 ? 2 : reviews.length,
+                          itemCount: movieDetails!.reviews.length > 2
+                              ? 2
+                              : movieDetails!.reviews.length,
                           itemBuilder: (context, index) {
-                            final review = reviews[index];
+                            final review = movieDetails!.reviews[index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: Container(
@@ -489,10 +522,8 @@ class _FilmScreenState extends State<FilmScreen> {
                                       children: [
                                         CircleAvatar(
                                           backgroundImage: NetworkImage(
-                                            review['author_details']
-                                                        ['avatar_path'] !=
-                                                    null
-                                                ? 'https://image.tmdb.org/t/p/w100${review['author_details']['avatar_path']}'
+                                            review.avatarPath.isNotEmpty
+                                                ? 'https://image.tmdb.org/t/p/w100${review.avatarPath}'
                                                 : 'https://via.placeholder.com/100',
                                           ),
                                           radius: 20,
@@ -503,7 +534,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              review['author'],
+                                              review.author,
                                               style: GoogleFonts.poppins(
                                                 color: Color.fromARGB(
                                                     255, 248, 248, 248),
@@ -511,8 +542,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                               ),
                                             ),
                                             Text(
-                                              review['created_at']
-                                                  .substring(0, 10),
+                                              review.createdAt.substring(0, 10),
                                               style: GoogleFonts.poppins(
                                                 color: Color.fromARGB(
                                                     255, 40, 48, 61),
@@ -525,9 +555,9 @@ class _FilmScreenState extends State<FilmScreen> {
                                     ),
                                     SizedBox(height: 10),
                                     Text(
-                                      review['content'].length > 100
-                                          ? '${review['content'].substring(0, 100)}...'
-                                          : review['content'],
+                                      review.content.length > 100
+                                          ? '${review.content.substring(0, 100)}...'
+                                          : review.content,
                                       style: GoogleFonts.poppins(
                                           color: Color.fromARGB(
                                               255, 248, 248, 248)),
@@ -550,7 +580,7 @@ class _FilmScreenState extends State<FilmScreen> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                        )
+                        ),
                 ],
               ),
             ),
@@ -578,9 +608,9 @@ class _FilmScreenState extends State<FilmScreen> {
                     height: screenHeight * 0.25,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: similarMovies.length,
+                      itemCount: movieDetails?.similarMovies.length ?? 0,
                       itemBuilder: (context, index) {
-                        final movie = similarMovies[index];
+                        final movie = movieDetails!.similarMovies[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Stack(
@@ -592,7 +622,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      'https://image.tmdb.org/t/p/w500${movie['backdrop_path']}',
+                                      'https://image.tmdb.org/t/p/w500${movie.backdropPath}',
                                     ),
                                     fit: BoxFit.cover,
                                   ),
@@ -611,7 +641,7 @@ class _FilmScreenState extends State<FilmScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        movie['title'],
+                                        movie.title,
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           color: Color.fromARGB(
