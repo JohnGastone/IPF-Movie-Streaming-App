@@ -227,9 +227,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                 backgroundColor:
                                     Color.fromARGB(255, 142, 0, 254),
                                 onPressed: () {},
-                                child: Icon(
-                                  CupertinoIcons.play_fill,
-                                  color: Color.fromARGB(255, 248, 248, 248),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 38.0, right: 38, top: 8, bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Watch Trailer",
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 248, 248, 248),
+                                        ),
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.play_fill,
+                                        color:
+                                            Color.fromARGB(255, 248, 248, 248),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
